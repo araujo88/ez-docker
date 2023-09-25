@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h>
+
 
 static char child_stack[1048576];
 
@@ -16,7 +19,7 @@ static int child_fn(void *arg) {
     // 4. Set hostname if a UTS Namespace is used.
     
     // 5. Execute the specified command using execvp or a similar function.
-    char *cmd[] = { "sh", (char *)arg, NULL };
+    char *cmd[] = { (char *)arg, NULL };
     execvp(cmd[0], cmd);
     
     // Error handling if execvp fails.
@@ -31,7 +34,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Create flags for other namespaces like CLONE_NEWNET, CLONE_NEWNS, CLONE_NEWUSER, etc.
-    int flags = SIGCHLD | CLONE_NEWPID | /* Other Namespace Flags */;
+    int flags = SIGCHLD | CLONE_NEWPID; /* Other Namespace Flags */
     
     // Create cgroups and set limits on resources like CPU, memory, etc.
     
